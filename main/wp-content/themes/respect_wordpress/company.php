@@ -250,7 +250,7 @@ if (!function_exists('rf_company_get_top_product_cards')) {
 }
 
 $products_category = rf_company_get_products_category_term();
-$products_url = function_exists('rf_theme_get_products_url') ? rf_theme_get_products_url() : 'https://respect-force.co.jp/seihin_index.html';
+$products_url = function_exists('rf_theme_get_products_url') ? rf_theme_get_products_url() : home_url('/seihin_index.html');
 $company_product_panels = array(
     'rental' => array(
         'label' => 'レンタル機器',

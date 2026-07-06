@@ -1440,8 +1440,39 @@ function rf_theme_get_products_category_terms() {
 }
 
 function rf_theme_get_products_url() {
-    return 'https://respect-force.co.jp/seihin_index.html';
+    return home_url('/seihin_index.html');
 }
+
+function rf_theme_map_products_index_request($query_vars) {
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '';
+    $request_path = trim((string) parse_url($request_uri, PHP_URL_PATH), '/');
+
+    if ($request_path !== 'seihin_index.html') {
+        return $query_vars;
+    }
+
+    $products_category = rf_theme_get_products_category_term();
+    if (!($products_category instanceof WP_Term)) {
+        return $query_vars;
+    }
+
+    unset($query_vars['pagename'], $query_vars['name'], $query_vars['page']);
+    $query_vars['category_name'] = $products_category->slug;
+
+    return $query_vars;
+}
+add_filter('request', 'rf_theme_map_products_index_request');
+
+function rf_theme_disable_products_index_canonical_redirect($redirect_url, $requested_url) {
+    $request_path = trim((string) parse_url($requested_url, PHP_URL_PATH), '/');
+
+    if ($request_path === 'seihin_index.html') {
+        return false;
+    }
+
+    return $redirect_url;
+}
+add_filter('redirect_canonical', 'rf_theme_disable_products_index_canonical_redirect', 10, 2);
 
 function rf_theme_redirect_products_archive_url() {
     $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '';

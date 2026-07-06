@@ -362,7 +362,7 @@ function rf_get_top_news_rows($limit = 3) {
 $theme_uri = esc_url(get_template_directory_uri());
 $site_url = esc_url(home_url('/'));
 $products_category = rf_get_products_category_term();
-$products_url = function_exists('rf_theme_get_products_url') ? rf_theme_get_products_url() : 'https://respect-force.co.jp/seihin_index.html';
+$products_url = function_exists('rf_theme_get_products_url') ? rf_theme_get_products_url() : home_url('/seihin_index.html');
 $product_category_terms = rf_get_products_category_terms();
 $guide_urls = rf_theme_get_named_page_urls();
 
