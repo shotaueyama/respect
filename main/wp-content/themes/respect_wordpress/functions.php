@@ -210,6 +210,324 @@ function rf_theme_print_seo_meta($context = '', $title = '', $description = '', 
     <?php
 }
 
+function rf_theme_get_structured_current_url() {
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '/';
+    $path = parse_url($request_uri, PHP_URL_PATH);
+    $path = $path !== null && $path !== false ? $path : '/';
+    $url = home_url($path);
+    $allowed_query_keys = array('detail_id', 'type', 's', 'paged');
+    $query_args = array();
+
+    foreach ($allowed_query_keys as $query_key) {
+        if (isset($_GET[$query_key]) && $_GET[$query_key] !== '') {
+            $query_args[$query_key] = sanitize_text_field(wp_unslash((string) $_GET[$query_key]));
+        }
+    }
+
+    return !empty($query_args) ? add_query_arg($query_args, $url) : $url;
+}
+
+function rf_theme_get_structured_page_title($seo_title) {
+    $title = trim((string) $seo_title);
+    $title = preg_replace('/\s*\|\s*RESPECT FORCE\s*$/u', '', $title);
+
+    return $title !== '' ? $title : 'RESPECT FORCE';
+}
+
+function rf_theme_get_structured_breadcrumb_items($page_title, $current_url, $product_schema = null) {
+    $items = array(
+        array(
+            'name' => 'トップ',
+            'url' => home_url('/'),
+        ),
+    );
+
+    if (function_exists('is_front_page') && is_front_page()) {
+        return $items;
+    }
+
+    if (function_exists('is_category') && is_category()) {
+        $term = get_queried_object();
+        if ($term instanceof WP_Term) {
+            if ($term->slug !== 'products') {
+                $items[] = array(
+                    'name' => '商品一覧',
+                    'url' => rf_theme_get_products_url(),
+                );
+            }
+
+            $ancestors = array_reverse(get_ancestors($term->term_id, 'category'));
+            foreach ($ancestors as $ancestor_id) {
+                $ancestor = get_category($ancestor_id);
+                if ($ancestor instanceof WP_Term) {
+                    $items[] = array(
+                        'name' => $ancestor->name,
+                        'url' => get_category_link($ancestor),
+                    );
+                }
+            }
+
+            $items[] = array(
+                'name' => $term->name,
+                'url' => get_category_link($term),
+            );
+
+            return $items;
+        }
+    }
+
+    $detail_id = isset($_GET['detail_id']) ? absint(wp_unslash($_GET['detail_id'])) : 0;
+    if ($detail_id > 0 && is_array($product_schema)) {
+        $items[] = array(
+            'name' => '商品一覧',
+            'url' => rf_theme_get_products_url(),
+        );
+    }
+
+    $items[] = array(
+        'name' => $page_title,
+        'url' => $current_url,
+    );
+
+    return $items;
+}
+
+function rf_theme_build_breadcrumb_schema($items) {
+    $item_list = array();
+
+    foreach (array_values($items) as $index => $item) {
+        $item_list[] = array(
+            '@type' => 'ListItem',
+            'position' => $index + 1,
+            'name' => $item['name'],
+            'item' => $item['url'],
+        );
+    }
+
+    return array(
+        '@type' => 'BreadcrumbList',
+        '@id' => rf_theme_get_structured_current_url() . '#breadcrumb',
+        'itemListElement' => $item_list,
+    );
+}
+
+function rf_theme_get_structured_product_post($detail_id) {
+    $detail_id = trim((string) $detail_id);
+    if ($detail_id === '') {
+        return null;
+    }
+
+    $posts = get_posts(array(
+        'post_type' => 'post',
+        'post_status' => 'publish',
+        'posts_per_page' => 1,
+        'no_found_rows' => true,
+        'meta_query' => array(
+            'relation' => 'OR',
+            array(
+                'key' => 'detail_id',
+                'value' => $detail_id,
+                'compare' => '=',
+            ),
+            array(
+                'key' => 'connect_id',
+                'value' => $detail_id,
+                'compare' => '=',
+            ),
+        ),
+    ));
+
+    return !empty($posts[0]) ? $posts[0] : null;
+}
+
+function rf_theme_get_structured_product_schema($current_url) {
+    $detail_id = isset($_GET['detail_id']) ? absint(wp_unslash($_GET['detail_id'])) : 0;
+    if ($detail_id <= 0) {
+        return null;
+    }
+
+    $product_data = rf_theme_fetch_product_detail_row($detail_id);
+    if (!is_array($product_data)) {
+        $product_data = array();
+    }
+
+    $product_post = rf_theme_get_structured_product_post($detail_id);
+    $post_id = $product_post instanceof WP_Post ? (int) $product_post->ID : 0;
+    $name = $post_id > 0 ? get_the_title($post_id) : '';
+    if ($name === '' && !empty($product_data['detail_title'])) {
+        $name = (string) $product_data['detail_title'];
+    }
+    if ($name === '') {
+        return null;
+    }
+
+    $description_source = '';
+    if (!empty($product_data['detail_catch'])) {
+        $description_source = $product_data['detail_catch'];
+    } elseif ($post_id > 0) {
+        $description_source = get_post_field('post_content', $post_id);
+    } elseif (!empty($product_data['detail_comment'])) {
+        $description_source = $product_data['detail_comment'];
+    }
+
+    $description = trim(wp_strip_all_tags((string) $description_source));
+    if ($description !== '') {
+        $description = function_exists('mb_substr') ? mb_substr($description, 0, 200, 'UTF-8') : substr($description, 0, 200);
+    }
+
+    $images = array();
+    if ($post_id > 0) {
+        $featured_image = get_the_post_thumbnail_url($post_id, 'large');
+        if ($featured_image) {
+            $images[] = $featured_image;
+        }
+
+        foreach (array('picture_1', 'picture_2', 'picture_3', 'picture_4', 'picture_5') as $image_field) {
+            $image_url = get_post_meta($post_id, $image_field, true);
+            if ($image_url !== '') {
+                $images[] = $image_url;
+            }
+        }
+    }
+
+    foreach (array('picture_id', 'picture_id1', 'picture_id2') as $picture_key) {
+        if (!empty($product_data[$picture_key])) {
+            $images[] = rf_theme_get_product_api_url('picture', $product_data[$picture_key]);
+        }
+    }
+
+    $images = array_values(array_unique(array_filter(array_map('esc_url_raw', $images))));
+
+    $schema = array(
+        '@type' => 'Product',
+        '@id' => $current_url . '#product',
+        'name' => $name,
+        'url' => $current_url,
+        'sku' => (string) $detail_id,
+        'brand' => array(
+            '@type' => 'Brand',
+            'name' => 'RESPECT FORCE',
+        ),
+    );
+
+    if ($description !== '') {
+        $schema['description'] = $description;
+    }
+    if (!empty($images)) {
+        $schema['image'] = $images;
+    }
+
+    $price_values = array();
+    if ($post_id > 0) {
+        foreach (array('new_price', 'used_price', 'rental_price', 'lease_price', 'sale_price') as $price_key) {
+            $amount = rf_theme_normalize_price_value(get_post_meta($post_id, $price_key, true));
+            if ($amount !== null) {
+                $price_values[] = $amount;
+            }
+        }
+    }
+
+    if (!empty($product_data['detail_prise'])) {
+        $legacy_amount = rf_theme_normalize_price_value($product_data['detail_prise']);
+        if ($legacy_amount !== null) {
+            $price_values[] = $legacy_amount;
+        }
+    }
+
+    $price_values = array_values(array_filter($price_values));
+    if (!empty($price_values)) {
+        $schema['offers'] = array(
+            '@type' => 'Offer',
+            'url' => $current_url,
+            'priceCurrency' => 'JPY',
+            'price' => min($price_values),
+            'seller' => array(
+                '@id' => home_url('/#organization'),
+            ),
+        );
+    }
+
+    return $schema;
+}
+
+function rf_theme_print_structured_data() {
+    if (is_admin() || wp_doing_ajax() || (function_exists('wp_is_json_request') && wp_is_json_request())) {
+        return;
+    }
+
+    $current_url = rf_theme_get_structured_current_url();
+    $product_schema = rf_theme_get_structured_product_schema($current_url);
+    $seo = rf_theme_get_seo_text();
+    $page_title = rf_theme_get_structured_page_title($seo['title']);
+    $description = trim((string) $seo['description']);
+    if (is_array($product_schema) && !empty($product_schema['name'])) {
+        $page_title = $product_schema['name'];
+        if (!empty($product_schema['description'])) {
+            $description = $product_schema['description'];
+        }
+    }
+    $breadcrumb_items = rf_theme_get_structured_breadcrumb_items($page_title, $current_url, $product_schema);
+    $breadcrumb_schema = rf_theme_build_breadcrumb_schema($breadcrumb_items);
+
+    $graph = array(
+        array(
+            '@type' => 'Organization',
+            '@id' => home_url('/#organization'),
+            'name' => 'RESPECT FORCE',
+            'url' => home_url('/'),
+            'logo' => array(
+                '@type' => 'ImageObject',
+                'url' => get_template_directory_uri() . '/img/common/main_logo.svg',
+            ),
+        ),
+        array(
+            '@type' => 'WebSite',
+            '@id' => home_url('/#website'),
+            'url' => home_url('/'),
+            'name' => 'RESPECT FORCE',
+            'publisher' => array(
+                '@id' => home_url('/#organization'),
+            ),
+            'potentialAction' => array(
+                '@type' => 'SearchAction',
+                'target' => home_url('/?s={search_term_string}'),
+                'query-input' => 'required name=search_term_string',
+            ),
+        ),
+        array(
+            '@type' => 'WebPage',
+            '@id' => $current_url . '#webpage',
+            'url' => $current_url,
+            'name' => $page_title,
+            'description' => $description,
+            'isPartOf' => array(
+                '@id' => home_url('/#website'),
+            ),
+            'about' => array(
+                '@id' => home_url('/#organization'),
+            ),
+            'breadcrumb' => array(
+                '@id' => $breadcrumb_schema['@id'],
+            ),
+            'inLanguage' => 'ja',
+        ),
+        $breadcrumb_schema,
+    );
+
+    if ($product_schema !== null) {
+        $graph[] = $product_schema;
+    }
+
+    $schema = array(
+        '@context' => 'https://schema.org',
+        '@graph' => $graph,
+    );
+    ?>
+    <script type="application/ld+json"><?php echo wp_json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?></script>
+    <?php
+}
+add_action('wp_head', 'rf_theme_print_structured_data', 30);
+
 function custom_pagination() {
     global $wp_query;
 
