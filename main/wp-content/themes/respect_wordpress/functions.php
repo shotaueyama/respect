@@ -1440,9 +1440,27 @@ function rf_theme_get_products_category_terms() {
 }
 
 function rf_theme_get_products_url() {
-    $products_category = rf_theme_get_products_category_term();
-    return $products_category ? get_category_link($products_category->term_id) : home_url('/category/products/');
+    return 'https://respect-force.co.jp/seihin_index.html';
 }
+
+function rf_theme_redirect_products_archive_url() {
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '';
+    $request_path = trim((string) parse_url($request_uri, PHP_URL_PATH), '/');
+
+    if ($request_path !== 'category/products') {
+        return;
+    }
+
+    $target = rf_theme_get_products_url();
+    $query = parse_url($request_uri, PHP_URL_QUERY);
+    if ($query !== null && $query !== '') {
+        $target .= '?' . $query;
+    }
+
+    wp_redirect($target, 301);
+    exit;
+}
+add_action('template_redirect', 'rf_theme_redirect_products_archive_url', 0);
 
 function rf_theme_get_template_page_url($template_file, $fallback_path = '/') {
     static $cache = array();
