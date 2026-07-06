@@ -3116,3 +3116,33 @@ function rf_theme_print_google_analytics() {
     <?php
 }
 add_action('wp_head', 'rf_theme_print_google_analytics', 20);
+
+function rf_theme_get_facebook_sdk_script() {
+    return '<script>(function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.3";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, \'script\', \'facebook-jssdk\'));</script>';
+}
+
+function rf_theme_inject_facebook_sdk_after_body($html) {
+    if (stripos($html, 'facebook-jssdk') !== false) {
+        return $html;
+    }
+
+    $script = "\n" . rf_theme_get_facebook_sdk_script();
+    $injected_html = preg_replace('/(<body\b[^>]*>)/i', '$1' . $script, $html, 1);
+
+    return $injected_html !== null ? $injected_html : $html;
+}
+
+function rf_theme_start_facebook_sdk_body_buffer() {
+    if (is_admin() || wp_doing_ajax() || (function_exists('wp_is_json_request') && wp_is_json_request())) {
+        return;
+    }
+
+    ob_start('rf_theme_inject_facebook_sdk_after_body');
+}
+add_action('template_redirect', 'rf_theme_start_facebook_sdk_body_buffer', -100);
