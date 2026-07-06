@@ -243,6 +243,31 @@ function custom_pagination() {
 ?>
 
 <?php
+function rf_theme_route_relabs_repair_alias() {
+    $request_path = isset($_SERVER['REQUEST_URI'])
+        ? trim(parse_url(wp_unslash($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/')
+        : '';
+
+    if ($request_path === 'relabs.html') {
+        wp_safe_redirect(home_url('/trouble.html'), 301);
+        exit;
+    }
+
+    if ($request_path !== 'trouble.html') {
+        return;
+    }
+
+    status_header(200);
+    global $wp_query;
+    if ($wp_query) {
+        $wp_query->is_404 = false;
+    }
+
+    include get_template_directory() . '/relabs_recredit.php';
+    exit;
+}
+add_action('template_redirect', 'rf_theme_route_relabs_repair_alias', 0);
+
 // カスタム列を追加（変更なし）
 function add_acf_columns($columns) {
     $columns['ranking'] = 'ランキング';
@@ -1470,7 +1495,7 @@ function rf_theme_get_named_page_urls() {
         'guide_buy' => rf_theme_get_template_page_url('guide_buy.php', '/guide-buy/'),
         'guide_lend' => rf_theme_get_template_page_url('guide_lend.php', '/guide-lend/'),
         'guide_sell' => rf_theme_get_template_page_url('guide_sell.php', '/guide-sell/'),
-        'relabs' => rf_theme_get_template_page_url('relabs.php', '/relabs.html'),
+        'relabs' => home_url('/trouble.html'),
         'recredit' => rf_theme_get_template_page_url('recredit.php', '/recredit.html'),
         'remake' => rf_theme_get_template_page_url('remake.php', '/remake.html'),
         'restart' => rf_theme_get_template_page_url('restart.php', '/restart.html'),

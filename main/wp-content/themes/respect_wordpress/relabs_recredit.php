@@ -16,7 +16,7 @@ Template Name:機器修理（リクレジットコピー）
 
     <meta property="og:type" content="article">
     <meta property="og:title" content="美容機器修理 | RESPECT FORCE">
-    <meta property="og:url" content="<?php echo esc_url(home_url('/relabs.html')); ?>">
+    <meta property="og:url" content="<?php echo esc_url(home_url('/trouble.html')); ?>">
     <meta property="og:image" content="<?php bloginfo('template_directory'); ?>/img/common/ogp.png">
     <meta property="og:description" content="どこよりも早く・確かに。美容機器の救急隊。美容機器の急な故障、出力低下、古い機種や廃盤機種の修理まで、迅速に診断・見積もりします。" />
     <meta property="og:site_name" content="RESPECT FORCE">
