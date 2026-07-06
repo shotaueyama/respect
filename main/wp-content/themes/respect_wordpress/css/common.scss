@@ -20890,7 +20890,7 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
 
   .share-salon-hero__copy {
     width: min(680px, 58%);
-    min-height: 540px;
+    min-height: 440px;
     padding-bottom: 30px;
   }
 
@@ -20910,25 +20910,25 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
   }
 
   .share-salon-hero__refund {
-    gap: 12px;
-    margin-bottom: 30px;
+    gap: 10px;
+    margin-bottom: 24px;
   }
 
   .share-salon-hero__refund-label {
-    font-size: clamp(28px, 3.2vw, 44px);
+    font-size: clamp(24px, 2.7vw, 38px);
   }
 
   .share-salon-hero__refund strong {
-    font-size: clamp(92px, 8.4vw, 142px);
+    font-size: clamp(78px, 7.2vw, 118px);
   }
 
   .share-salon-hero__refund span:not(.share-salon-hero__refund-label) {
-    font-size: clamp(42px, 4vw, 64px);
+    font-size: clamp(34px, 3.4vw, 54px);
   }
 
   .share-salon-hero__refund em {
-    margin-left: 14px;
-    font-size: clamp(48px, 4.8vw, 74px);
+    margin-left: 10px;
+    font-size: clamp(40px, 4.1vw, 62px);
   }
 
   .share-salon-hero__target {
@@ -20936,13 +20936,18 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
   }
 
   .share-salon-hero__maincopy {
-    font-size: clamp(44px, 4.6vw, 64px);
+    font-size: clamp(32px, 3.15vw, 44px);
+    line-height: 1.24;
+  }
+
+  .share-salon-hero__maincopy br {
+    display: none;
   }
 
   .share-salon-hero__note {
     right: -430px;
     bottom: -6px;
-    width: min(35vw, 460px);
+    width: min(33vw, 430px);
   }
 
   .share-salon-hero__cards {
@@ -21241,23 +21246,29 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
   }
 
   .share-salon-hero__refund-label {
-    font-size: clamp(20px, 5.2vw, 26px);
+    font-size: clamp(18px, 4.5vw, 22px);
   }
 
   .share-salon-hero__refund strong {
-    font-size: clamp(66px, 18vw, 96px);
+    font-size: clamp(52px, 14vw, 76px);
   }
 
   .share-salon-hero__refund span:not(.share-salon-hero__refund-label) {
-    font-size: clamp(26px, 7.2vw, 35px);
+    font-size: clamp(22px, 5.8vw, 30px);
   }
 
   .share-salon-hero__refund em {
-    font-size: clamp(30px, 8vw, 40px);
+    font-size: clamp(25px, 6.5vw, 34px);
   }
 
   .share-salon-hero__maincopy {
-    font-size: clamp(30px, 8.6vw, 40px);
+    font-size: clamp(23px, 6vw, 31px);
+    line-height: 1.28;
+    white-space: nowrap;
+  }
+
+  .share-salon-hero__maincopy br {
+    display: none;
   }
 
   .share-salon-hero__headline-block {
@@ -21265,11 +21276,9 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
   }
 
   .share-salon-hero__note {
-    position: absolute;
-    right: -10px;
-    bottom: -4px;
-    width: min(44vw, 320px);
-    margin: 0;
+    position: static;
+    width: min(42vw, 220px);
+    margin: 8px 0 0 auto;
   }
 
   .share-salon-worries__title,
@@ -21373,9 +21382,7 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
   }
 
   .share-salon-hero__note {
-    right: -6px;
-    bottom: -2px;
-    width: min(48vw, 260px);
+    width: min(46vw, 210px);
   }
 }
 
