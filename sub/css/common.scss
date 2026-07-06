@@ -17457,7 +17457,8 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
 }
 
 .share-salon-feature {
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
   padding: 28px 28px 22px;
   border: 2px solid rgba(228, 0, 70, 0.12);
   border-radius: 24px;
@@ -17468,16 +17469,25 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
 }
 
 .share-salon-feature__icon {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
   width: 104px;
   height: 104px;
-  margin: 0 auto 18px;
+  margin: -80px auto 22px;
+  border: 2px solid rgba(228, 0, 70, 0.12);
+  border-radius: 50%;
+  background: #fff;
   color: #e40046;
+  box-shadow: 0 10px 24px rgba(228, 0, 70, 0.1);
+  box-sizing: border-box;
 }
 
 .share-salon-feature__icon img {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 72%;
+  height: 72%;
   object-fit: contain;
 }
 
@@ -20942,7 +20952,7 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
   .share-salon-feature__icon {
     width: 86px;
     height: 86px;
-    margin-bottom: 14px;
+    margin: -65px auto 18px;
   }
 
   .share-salon-feature h2 {
@@ -21312,6 +21322,16 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
   .share-salon-compare-table__pink {
     font-size: 17px;
   }
+
+  .share-salon-feature {
+    padding-top: 24px;
+  }
+
+  .share-salon-feature__icon {
+    width: 76px;
+    height: 76px;
+    margin: -62px auto 16px;
+  }
 }
 
 @media screen and (max-width: 750px) {
@@ -21323,6 +21343,16 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
   .share-salon-flow__inner,
   .share-salon-faq__inner {
     width: min(100% - 32px, 480px);
+  }
+
+  .share-salon-feature {
+    padding-top: 24px;
+  }
+
+  .share-salon-feature__icon {
+    width: 70px;
+    height: 70px;
+    margin-top: -59px;
   }
 }
 
