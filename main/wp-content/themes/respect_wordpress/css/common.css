@@ -19599,6 +19599,381 @@ body.top-home .top-footer__sns a[aria-label=Threads] img {
     padding: 8px;
   }
 }
+/* Share salon scale adjustment */
+@media screen and (min-width: 901px) {
+  .share-salon-hero__inner {
+    width: min(1180px, 100% - 72px);
+    padding-top: 32px;
+    padding-bottom: 56px;
+  }
+  .share-salon-hero__visual {
+    right: calc(-1 * max(36px, (100vw - min(1180px, 100vw - 72px)) / 2));
+    width: min(620px, 50vw);
+    height: 600px;
+  }
+  .share-salon-hero__copy {
+    width: min(680px, 58%);
+    min-height: 540px;
+    padding-bottom: 30px;
+  }
+  .share-salon-hero__brand {
+    gap: 18px;
+    margin-bottom: 26px;
+    font-size: 28px;
+  }
+  .share-salon-hero__brand-property svg {
+    width: 30px;
+    height: 30px;
+  }
+  .share-salon-hero__brand-cross {
+    font-size: 27px;
+  }
+  .share-salon-hero__refund {
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+  .share-salon-hero__refund-label {
+    font-size: clamp(28px, 3.2vw, 44px);
+  }
+  .share-salon-hero__refund strong {
+    font-size: clamp(92px, 8.4vw, 142px);
+  }
+  .share-salon-hero__refund span:not(.share-salon-hero__refund-label) {
+    font-size: clamp(42px, 4vw, 64px);
+  }
+  .share-salon-hero__refund em {
+    margin-left: 14px;
+    font-size: clamp(48px, 4.8vw, 74px);
+  }
+  .share-salon-hero__target {
+    font-size: clamp(18px, 1.55vw, 24px);
+  }
+  .share-salon-hero__maincopy {
+    font-size: clamp(44px, 4.6vw, 64px);
+  }
+  .share-salon-hero__note {
+    right: -430px;
+    bottom: 72px;
+    width: min(35vw, 460px);
+  }
+  .share-salon-hero__cards {
+    gap: 16px;
+  }
+  .share-salon-feature {
+    padding: 22px 22px 18px;
+    border-radius: 20px;
+  }
+  .share-salon-feature__icon {
+    width: 86px;
+    height: 86px;
+    margin-bottom: 14px;
+  }
+  .share-salon-feature h2 {
+    font-size: clamp(19px, 1.55vw, 25px);
+  }
+  .share-salon-feature p {
+    margin: 14px 0 18px;
+    padding-top: 18px;
+    font-size: clamp(15px, 1.25vw, 19px);
+  }
+  .share-salon-hero__line a,
+  .share-salon-flow__line,
+  .share-salon-faq__cta-body a {
+    min-height: 76px;
+  }
+  .share-salon-hero__line a {
+    width: min(720px, 80%);
+    gap: 22px;
+    font-size: clamp(26px, 2.8vw, 42px);
+  }
+  .share-salon-worries,
+  .share-salon-support,
+  .share-salon-cases,
+  .share-salon-compare,
+  .share-salon-flow,
+  .share-salon-faq {
+    padding-top: 64px;
+    padding-bottom: 72px;
+  }
+  .share-salon-worries__inner {
+    width: min(1040px, 100% - 72px);
+  }
+  .share-salon-support__inner {
+    width: min(1060px, 100% - 72px);
+  }
+  .share-salon-cases__inner {
+    width: min(1120px, 100% - 72px);
+  }
+  .share-salon-compare__inner {
+    width: min(1120px, 100% - 72px);
+  }
+  .share-salon-flow__inner {
+    width: min(1040px, 100% - 72px);
+  }
+  .share-salon-faq__inner {
+    width: min(1080px, 100% - 72px);
+  }
+  .share-salon-worries__ribbon,
+  .share-salon-support__ribbon {
+    font-size: clamp(18px, 1.7vw, 25px);
+  }
+  .share-salon-worries__title,
+  .share-salon-support__title,
+  .share-salon-cases__title,
+  .share-salon-compare__title,
+  .share-salon-flow__title,
+  .share-salon-faq__title {
+    font-size: clamp(40px, 3.6vw, 56px);
+  }
+  .share-salon-worry {
+    grid-template-columns: 140px minmax(0, 1fr) 320px;
+    gap: 26px;
+    min-height: 198px;
+    padding: 22px 28px;
+  }
+  .share-salon-worry.is-image-left {
+    grid-template-columns: 320px minmax(0, 1fr) 140px;
+  }
+  .share-salon-worry__icon svg,
+  .share-salon-worry__icon img {
+    width: min(100px, 100%);
+  }
+  .share-salon-worry__number,
+  .share-salon-support-card__number {
+    width: 112px;
+    height: 104px;
+    font-size: 31px;
+  }
+  .share-salon-worry h3,
+  .share-salon-support-card h3 {
+    font-size: clamp(23px, 2vw, 31px);
+  }
+  .share-salon-worry p,
+  .share-salon-support-card p {
+    font-size: clamp(15px, 1.18vw, 18px);
+  }
+  .share-salon-support-card {
+    min-height: 290px;
+  }
+  .share-salon-support-card__photo img {
+    min-height: 290px;
+  }
+  .share-salon-support-card__body {
+    padding: 34px 190px 34px 58px;
+  }
+  .share-salon-support-card.is-photo-right .share-salon-support-card__body {
+    padding-right: 58px;
+    padding-left: 190px;
+  }
+  .share-salon-support-card__icon {
+    width: 122px;
+    height: 122px;
+  }
+  .share-salon-case {
+    min-height: 290px;
+  }
+  .share-salon-case__body {
+    padding: 20px 22px;
+  }
+  .share-salon-case__meta img {
+    width: 62px;
+    height: 62px;
+  }
+  .share-salon-case__meta span {
+    font-size: clamp(15px, 1.1vw, 18px);
+  }
+  .share-salon-case__lead {
+    font-size: clamp(17px, 1.15vw, 21px);
+  }
+  .share-salon-case__result {
+    font-size: clamp(30px, 2.6vw, 44px);
+  }
+  .share-salon-case__after {
+    font-size: clamp(17px, 1.2vw, 22px);
+  }
+  .share-salon-case__text {
+    font-size: clamp(13px, 0.95vw, 15px);
+  }
+  .share-salon-compare__lead,
+  .share-salon-faq__lead {
+    font-size: clamp(18px, 1.5vw, 24px);
+  }
+  .share-salon-compare-table {
+    min-width: 860px;
+  }
+  .share-salon-compare-table thead th {
+    height: 76px;
+    padding: 12px 14px;
+    font-size: clamp(21px, 1.7vw, 30px);
+  }
+  .share-salon-compare-table thead .is-remake-col {
+    font-size: clamp(30px, 2.4vw, 42px);
+  }
+  .share-salon-compare-table tbody th {
+    padding: 18px 16px;
+    font-size: clamp(16px, 1.25vw, 21px);
+  }
+  .share-salon-compare-table td {
+    padding: 18px 14px;
+    font-size: clamp(19px, 1.55vw, 26px);
+  }
+  .share-salon-compare-icon {
+    width: 68px;
+    height: 68px;
+  }
+  .share-salon-compare-icon svg {
+    width: 44px;
+    height: 44px;
+  }
+  .share-salon-compare-table__amount {
+    font-size: clamp(34px, 3vw, 48px);
+  }
+  .share-salon-compare-table__amount.is-primary {
+    font-size: clamp(46px, 4.5vw, 68px);
+  }
+  .share-salon-compare-table__pink {
+    font-size: clamp(22px, 1.7vw, 29px);
+  }
+  .share-salon-flow-step {
+    grid-template-columns: 118px minmax(0, 1fr) minmax(260px, 0.82fr);
+    gap: 28px;
+    min-height: 248px;
+    padding: 30px 36px 30px 28px;
+  }
+  .share-salon-flow-step__badge {
+    width: 104px;
+    height: 132px;
+  }
+  .share-salon-flow-step__badge span {
+    font-size: 20px;
+  }
+  .share-salon-flow-step__badge strong {
+    font-size: 64px;
+  }
+  .share-salon-flow-step__body h3 {
+    font-size: clamp(28px, 2.35vw, 38px);
+  }
+  .share-salon-flow-step__body p,
+  .share-salon-flow-step__body li {
+    font-size: clamp(16px, 1.25vw, 21px);
+  }
+  .share-salon-faq-card {
+    grid-template-columns: 72px minmax(0, 1fr) 170px;
+    gap: 22px;
+    min-height: 150px;
+    padding: 20px 36px 20px 32px;
+  }
+  .share-salon-faq-card__qa span {
+    width: 56px;
+    height: 56px;
+    font-size: 32px;
+  }
+  .share-salon-faq-card__body h3 {
+    font-size: clamp(22px, 1.7vw, 29px);
+  }
+  .share-salon-faq-card__body p {
+    font-size: clamp(16px, 1.25vw, 22px);
+  }
+  .share-salon-faq-card__icon {
+    width: 136px;
+    height: 136px;
+  }
+}
+@media screen and (max-width: 900px) {
+  .share-salon-hero__inner,
+  .share-salon-worries__inner,
+  .share-salon-support__inner,
+  .share-salon-cases__inner,
+  .share-salon-compare__inner,
+  .share-salon-flow__inner,
+  .share-salon-faq__inner {
+    width: min(100% - 40px, 640px);
+  }
+  .share-salon-hero__brand {
+    font-size: 23px;
+  }
+  .share-salon-hero__refund-label {
+    font-size: clamp(20px, 5.2vw, 26px);
+  }
+  .share-salon-hero__refund strong {
+    font-size: clamp(66px, 18vw, 96px);
+  }
+  .share-salon-hero__refund span:not(.share-salon-hero__refund-label) {
+    font-size: clamp(26px, 7.2vw, 35px);
+  }
+  .share-salon-hero__refund em {
+    font-size: clamp(30px, 8vw, 40px);
+  }
+  .share-salon-hero__maincopy {
+    font-size: clamp(30px, 8.6vw, 40px);
+  }
+  .share-salon-worries__title,
+  .share-salon-support__title,
+  .share-salon-cases__title,
+  .share-salon-compare__title,
+  .share-salon-flow__title,
+  .share-salon-faq__title {
+    font-size: clamp(27px, 6.7vw, 38px);
+  }
+  .share-salon-feature h2,
+  .share-salon-worry h3,
+  .share-salon-support-card h3,
+  .share-salon-flow-step__body h3 {
+    font-size: clamp(19px, 5vw, 24px);
+  }
+  .share-salon-feature p,
+  .share-salon-worry p,
+  .share-salon-support-card p,
+  .share-salon-case__text,
+  .share-salon-flow-step__body p,
+  .share-salon-flow-step__body li,
+  .share-salon-faq-card__body p {
+    font-size: 13px;
+  }
+  .share-salon-case__lead,
+  .share-salon-case__after,
+  .share-salon-faq-card__body h3 {
+    font-size: 16px;
+  }
+  .share-salon-case__result {
+    font-size: 28px;
+  }
+  .share-salon-compare-table {
+    min-width: 560px;
+  }
+  .share-salon-compare-table thead th {
+    font-size: 14px;
+  }
+  .share-salon-compare-table thead .is-remake-col {
+    font-size: 21px;
+  }
+  .share-salon-compare-table tbody th {
+    font-size: 13px;
+  }
+  .share-salon-compare-table td {
+    font-size: 15px;
+  }
+  .share-salon-compare-table__amount {
+    font-size: 24px;
+  }
+  .share-salon-compare-table__amount.is-primary {
+    font-size: 34px;
+  }
+  .share-salon-compare-table__pink {
+    font-size: 17px;
+  }
+}
+@media screen and (max-width: 750px) {
+  .share-salon-hero__inner,
+  .share-salon-worries__inner,
+  .share-salon-support__inner,
+  .share-salon-cases__inner,
+  .share-salon-compare__inner,
+  .share-salon-flow__inner,
+  .share-salon-faq__inner {
+    width: min(100% - 32px, 480px);
+  }
+}
 .relabs-after-support {
   padding: 96px 0 104px;
   background: #fff;

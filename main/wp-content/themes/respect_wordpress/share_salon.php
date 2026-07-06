@@ -181,7 +181,7 @@ $share_cases = array(
     <meta name="description" content="<?php echo esc_attr($rf_seo['description']); ?>">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-    <link href="<?php bloginfo('template_directory'); ?>/css/common.css?v=2026070104" rel="stylesheet">
+    <link href="<?php bloginfo('template_directory'); ?>/css/common.css?v=2026070601" rel="stylesheet">
 
     <meta property="og:type" content="article">
     <meta property="og:title" content="<?php echo esc_attr($rf_seo['title']); ?>">

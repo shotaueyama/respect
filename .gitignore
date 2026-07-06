@@ -15,6 +15,7 @@ main/post_csv.php
 # Backups and temporary snapshots
 sub/backup/
 **/backup-before-*/
+**/_local_backup_*/
 *.bak
 *.bak-*
 *.before-*
