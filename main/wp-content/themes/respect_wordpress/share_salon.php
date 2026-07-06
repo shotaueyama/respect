@@ -3,7 +3,7 @@
 Template Name:シェアサロン
 */
 $theme_uri = esc_url(get_template_directory_uri());
-$contact_url = home_url('/contact.html?sv=001');
+$contact_url = 'https://line.me/R/ti/p/@495qldsg?oat_content=url&ts=04270815';
 $rf_seo = rf_theme_get_seo_text('share_salon');
 $share_features = array(
     array(
