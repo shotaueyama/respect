@@ -16378,6 +16378,11 @@ body.top-home .top-footer__sns a[aria-label=Threads] img {
   font-weight: 700;
 }
 
+.share-salon-hero__headline-block {
+  position: relative;
+  z-index: 4;
+}
+
 .share-salon-hero__headline {
   position: relative;
   z-index: 10;
@@ -16461,7 +16466,7 @@ body.top-home .top-footer__sns a[aria-label=Threads] img {
 .share-salon-hero__note {
   position: absolute;
   right: -530px;
-  bottom: 84px;
+  bottom: -8px;
   z-index: 4;
   isolation: isolate;
   display: block;
@@ -19663,7 +19668,7 @@ body.top-home .top-footer__sns a[aria-label=Threads] img {
   }
   .share-salon-hero__note {
     right: -430px;
-    bottom: 72px;
+    bottom: -6px;
     width: min(35vw, 460px);
   }
   .share-salon-hero__cards {
@@ -19917,6 +19922,16 @@ body.top-home .top-footer__sns a[aria-label=Threads] img {
   .share-salon-hero__maincopy {
     font-size: clamp(30px, 8.6vw, 40px);
   }
+  .share-salon-hero__headline-block {
+    width: 100%;
+  }
+  .share-salon-hero__note {
+    position: absolute;
+    right: -10px;
+    bottom: -4px;
+    width: min(44vw, 320px);
+    margin: 0;
+  }
   .share-salon-worries__title,
   .share-salon-support__title,
   .share-salon-cases__title,
@@ -19998,6 +20013,11 @@ body.top-home .top-footer__sns a[aria-label=Threads] img {
     width: 70px;
     height: 70px;
     margin-top: -59px;
+  }
+  .share-salon-hero__note {
+    right: -6px;
+    bottom: -2px;
+    width: min(48vw, 260px);
   }
 }
 .relabs-after-support {
