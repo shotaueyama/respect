@@ -21386,6 +21386,218 @@ body.top-home .top-footer__sns a[aria-label="Threads"] img {
   }
 }
 
+/* Share salon hero CTA / compact compare table */
+.share-salon-hero__main-cta {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  margin-top: 24px;
+}
+
+.share-salon-hero__main-cta a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 250px;
+  min-height: 56px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  background: #06c755;
+  color: #fff;
+  font-family: "Noto Sans JP", "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-decoration: none;
+  box-shadow: 0 10px 22px rgba(6, 199, 85, 0.24);
+  box-sizing: border-box;
+}
+
+.share-salon-compare-table {
+  min-width: 820px;
+}
+
+.share-salon-compare-table thead th {
+  height: 70px;
+  padding: 10px 12px;
+  font-size: clamp(20px, 1.65vw, 29px);
+}
+
+.share-salon-compare-table thead .is-remake-col {
+  font-size: clamp(28px, 2.35vw, 40px);
+}
+
+.share-salon-compare-table tbody th {
+  padding: 16px 14px;
+  font-size: clamp(15px, 1.15vw, 20px);
+}
+
+.share-salon-compare-table__label {
+  gap: 14px;
+}
+
+.share-salon-compare-table td {
+  padding: 16px 12px;
+  font-size: clamp(17px, 1.4vw, 24px);
+}
+
+.share-salon-compare-icon {
+  width: 62px;
+  height: 62px;
+}
+
+.share-salon-compare-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.share-salon-compare-table__amount {
+  font-size: clamp(31px, 2.75vw, 45px);
+}
+
+.share-salon-compare-table__amount.is-primary {
+  font-size: clamp(42px, 3.9vw, 62px);
+}
+
+.share-salon-compare-table__pink {
+  margin-bottom: 12px;
+  font-size: clamp(20px, 1.55vw, 27px);
+}
+
+.share-salon-compare-stores {
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.share-salon-compare-stores i {
+  width: 48px;
+  height: 38px;
+  border-width: 4px;
+}
+
+.share-salon-compare-stores i:before {
+  top: -15px;
+  left: -4px;
+  width: 48px;
+  height: 16px;
+  border-width: 4px;
+}
+
+.share-salon-compare-stores i:after {
+  right: 13px;
+  width: 11px;
+  height: 18px;
+  border-width: 3px;
+}
+
+.share-salon-compare-mini-icon {
+  width: 62px;
+  height: 62px;
+  margin-top: 16px;
+}
+
+.share-salon-compare-fees {
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.share-salon-compare-fees svg {
+  width: 58px;
+  height: 58px;
+}
+
+.share-salon-compare-fees span {
+  font-size: 40px;
+}
+
+@media screen and (max-width: 900px) {
+  .share-salon-hero__main-cta {
+    margin-top: 14px;
+  }
+
+  .share-salon-hero__main-cta a {
+    min-width: 190px;
+    min-height: 44px;
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .share-salon-compare-table {
+    min-width: 520px;
+  }
+
+  .share-salon-compare-table thead th {
+    height: 50px;
+    padding: 8px 8px;
+    font-size: 12px;
+  }
+
+  .share-salon-compare-table thead .is-remake-col {
+    font-size: 18px;
+  }
+
+  .share-salon-compare-table tbody th {
+    padding: 10px 8px;
+    font-size: 11px;
+  }
+
+  .share-salon-compare-table__label {
+    gap: 8px;
+  }
+
+  .share-salon-compare-table td {
+    padding: 11px 8px;
+    font-size: 13px;
+  }
+
+  .share-salon-compare-table__amount {
+    font-size: 21px;
+  }
+
+  .share-salon-compare-table__amount.is-primary {
+    font-size: 29px;
+  }
+
+  .share-salon-compare-table__pink {
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .share-salon-compare-table {
+    min-width: 500px;
+  }
+
+  .share-salon-compare-table thead th {
+    font-size: 12px;
+  }
+
+  .share-salon-compare-table thead .is-remake-col {
+    font-size: 17px;
+  }
+
+  .share-salon-compare-table tbody th {
+    font-size: 11px;
+  }
+
+  .share-salon-compare-table td {
+    font-size: 12px;
+  }
+
+  .share-salon-compare-table__amount {
+    font-size: 20px;
+  }
+
+  .share-salon-compare-table__amount.is-primary {
+    font-size: 28px;
+  }
+
+  .share-salon-compare-table__pink {
+    font-size: 13px;
+  }
+}
+
 .relabs-after-support {
   padding: 96px 0 104px;
   background: #fff;

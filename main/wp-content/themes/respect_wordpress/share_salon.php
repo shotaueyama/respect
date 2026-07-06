@@ -181,7 +181,7 @@ $share_cases = array(
     <meta name="description" content="<?php echo esc_attr($rf_seo['description']); ?>">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-    <link href="<?php bloginfo('template_directory'); ?>/css/common.css?v=2026070605" rel="stylesheet">
+    <link href="<?php bloginfo('template_directory'); ?>/css/common.css?v=2026070606" rel="stylesheet">
 
     <meta property="og:type" content="article">
     <meta property="og:title" content="<?php echo esc_attr($rf_seo['title']); ?>">
@@ -239,6 +239,10 @@ $share_cases = array(
                             <span class="share-salon-hero__target">美容師・ネイリスト・アイリスト・セラピストのための</span>
                             <span class="share-salon-hero__maincopy"><strong>好きな場所</strong>で働けるシェアサロン</span>
                         </h1>
+
+                        <div class="share-salon-hero__main-cta">
+                            <a href="<?php echo esc_url($contact_url); ?>">LINEで相談してみる</a>
+                        </div>
 
                         <p class="share-salon-hero__note" aria-label="顧客はいる。でも、働く場所がない。">
                             <img src="<?php echo $theme_uri; ?>/img/share-salon/hero-note.png?v=2026062516" alt="" loading="eager" decoding="async">
