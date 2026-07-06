@@ -1,0 +1,40 @@
+.DS_Store
+.claude/
+.vscode/
+
+# Local/server connection notes
+sub/docs/server-connection.md
+*deploy-sftp*.md
+
+# Local DB/API connection files and exported product dumps
+api/api_product.php
+main/wp-content/themes/respect_wordpress/api_product.php
+main/post_all_xml/
+main/post_csv.php
+
+# Backups and temporary snapshots
+sub/backup/
+**/backup-before-*/
+*.bak
+*.bak-*
+*.before-*
+*.before-*
+*.tmp
+tmp_*
+
+# Large binary artifacts that exceed normal GitHub limits
+**/movie/
+*.mp4
+*.mov
+*.tgz
+*.tar
+*.gz
+*.zip
+
+# Environment and secrets
+.env
+.env.*
+*.pem
+*.key
+*_rsa
+*_ed25519
