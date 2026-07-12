@@ -4,11 +4,11 @@ Template Name:ご利用ガイド
 */
 $theme_uri = esc_url(get_template_directory_uri());
 $rent_guide_asset_base = $theme_uri . '/img/figma-guide-rent';
-$rent_guide_asset_version = '2026063032';
+$rent_guide_asset_version = '2026070805';
 $shortcut_cards = rf_theme_get_top_shortcut_cards();
 $rental_url = !empty($shortcut_cards[0]['url']) ? $shortcut_cards[0]['url'] : home_url('/');
 $products_url = function_exists('rf_theme_get_products_url') ? rf_theme_get_products_url() : home_url('/');
-$guide_floating_cta_url = $rental_url;
+$guide_floating_cta_url = $products_url;
 $guide_floating_cta_label = 'アイテムを探す';
 if (have_posts()) {
     the_post();
@@ -103,7 +103,7 @@ $merit_cards = array(
     <title><?php echo esc_html($rf_seo["title"]); ?></title>
     <meta name="description" content="<?php echo esc_attr($rf_seo["description"]); ?>">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <link href="<?php bloginfo('template_directory'); ?>/css/common.css?v=2026052431" rel="stylesheet">
+    <link href="<?php bloginfo('template_directory'); ?>/css/common.css?v=2026070803" rel="stylesheet">
     <meta property="og:type" content="article">
     <meta property="og:title" content="<?php echo esc_attr($rf_seo["title"]); ?>">
     <meta property="og:url" content="">
@@ -121,7 +121,7 @@ $merit_cards = array(
     <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
     <?php wp_head(); ?>
 </head>
-<body <?php body_class('rf-product-detail-page rf-guide-page'); ?>>
+<body <?php body_class('rf-product-detail-page rf-guide-page rf-guide-page--borrow'); ?>>
     <?php get_header(); ?>
 
     <main class="rf-guide-page__main">
@@ -245,7 +245,7 @@ $merit_cards = array(
                 </div>
 
                 <div class="rf-guide-page__footer-cta">
-                    <a href="<?php echo esc_url($rental_url); ?>" class="rf-guide-page__cta">アイテムを探す</a>
+                    <a href="<?php echo esc_url($products_url); ?>" class="rf-guide-page__cta">アイテムを探す</a>
                 </div>
             </div>
         </section>

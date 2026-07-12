@@ -5,9 +5,21 @@ Template Name:ニュース
 
 $query_page = isset($_GET['p']) ? absint(wp_unslash($_GET['p'])) : 0;
 $paged = max(1, $query_page, (int) get_query_var('paged'), (int) get_query_var('page'));
-$news_term = get_category_by_slug('topics');
+global $rf_legacy_topic_context;
 
-if (!($news_term instanceof WP_Term)) {
+$legacy_topic_context = isset($rf_legacy_topic_context) && is_array($rf_legacy_topic_context)
+    ? $rf_legacy_topic_context
+    : null;
+$news_term_slug = $legacy_topic_context['slug'] ?? 'topics';
+$news_page_title = isset($legacy_topic_context['label'])
+    ? $legacy_topic_context['label'] . ' TOPICS'
+    : 'お知らせ';
+$news_meta_description = isset($legacy_topic_context['label'])
+    ? 'RESPECT FORCEの' . $legacy_topic_context['label'] . 'カテゴリのお知らせ一覧です。関連するニュースやご案内を掲載しています。'
+    : 'RESPECT FORCEのお知らせ一覧です。最新のニュースやご案内を掲載しています。';
+$news_term = get_category_by_slug($news_term_slug);
+
+if ($news_term_slug === 'topics' && !($news_term instanceof WP_Term)) {
     $fallback_term = get_category(46);
     $news_term = $fallback_term instanceof WP_Term ? $fallback_term : null;
 }
@@ -37,27 +49,32 @@ $news_query = new WP_Query($query_args);
 $news_archive_url = function_exists('rf_theme_get_named_page_urls')
     ? (rf_theme_get_named_page_urls()['news'] ?? home_url('/news/'))
     : home_url('/news/');
+
+if (isset($legacy_topic_context['path'])) {
+    $news_archive_url = home_url('/' . ltrim($legacy_topic_context['path'], '/'));
+}
+
 $news_pagination_base = add_query_arg('p', '%#%', $news_archive_url);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>お知らせ | <?php bloginfo('name'); ?></title>
-    <meta name="description" content="RESPECT FORCEのお知らせ一覧です。最新のニュースやご案内を掲載しています。">
+    <title><?php echo esc_html($news_page_title); ?> | <?php bloginfo('name'); ?></title>
+    <meta name="description" content="<?php echo esc_attr($news_meta_description); ?>">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link href="<?php bloginfo('template_directory'); ?>/css/common.css" rel="stylesheet">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="お知らせ | <?php bloginfo('name'); ?>">
+    <meta property="og:title" content="<?php echo esc_attr($news_page_title); ?> | <?php bloginfo('name'); ?>">
     <meta property="og:url" content="<?php echo esc_url($news_archive_url); ?>">
     <meta property="og:image" content="<?php echo esc_url(get_template_directory_uri() . '/img/common/ogp.png'); ?>">
-    <meta property="og:description" content="RESPECT FORCEのお知らせ一覧です。最新のニュースやご案内を掲載しています。">
+    <meta property="og:description" content="<?php echo esc_attr($news_meta_description); ?>">
     <meta property="og:site_name" content="<?php bloginfo('name'); ?>">
     <meta property="og:locale" content="ja_JP">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="お知らせ | <?php bloginfo('name'); ?>">
-    <meta name="twitter:description" content="RESPECT FORCEのお知らせ一覧です。最新のニュースやご案内を掲載しています。">
+    <meta name="twitter:title" content="<?php echo esc_attr($news_page_title); ?> | <?php bloginfo('name'); ?>">
+    <meta name="twitter:description" content="<?php echo esc_attr($news_meta_description); ?>">
     <meta name="twitter:image" content="<?php echo esc_url(get_template_directory_uri() . '/img/common/ogp.png'); ?>">
 
     <link rel="shortcut icon" href="<?php bloginfo('template_directory'); ?>/img/common/favicon.ico" type="image/x-icon">
@@ -71,7 +88,7 @@ $news_pagination_base = add_query_arg('p', '%#%', $news_archive_url);
     <main class="rf-policy-page__main">
         <div class="rf-policy-page__hero">
             <div class="rf-policy-page__inner">
-                <h1 class="rf-policy-page__title">お知らせ</h1>
+                <h1 class="rf-policy-page__title"><?php echo esc_html($news_page_title); ?></h1>
             </div>
         </div>
         <div class="rf-policy-page__breadcrumb-wrap">
@@ -79,7 +96,7 @@ $news_pagination_base = add_query_arg('p', '%#%', $news_archive_url);
                 <nav class="rf-detail__breadcrumbs" aria-label="Breadcrumb">
                     <a href="<?php echo esc_url(home_url('/')); ?>">トップ</a>
                     <span class="rf-detail__breadcrumbs-separator">›</span>
-                    <span>お知らせ</span>
+                    <span><?php echo esc_html($news_page_title); ?></span>
                 </nav>
             </div>
         </div>

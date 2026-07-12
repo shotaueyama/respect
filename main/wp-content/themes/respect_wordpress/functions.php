@@ -192,7 +192,7 @@ function rf_theme_print_seo_meta($context = '', $title = '', $description = '', 
     $seo_description = $seo['description'];
     $site_name = 'RESPECT FORCE';
     $url = function_exists('home_url') ? home_url(add_query_arg(array(), isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '/')) : '';
-    $image = function_exists('get_template_directory_uri') ? get_template_directory_uri() . '/img/common/ogp.png' : '';
+    $image = function_exists('rf_theme_get_og_image_url') ? rf_theme_get_og_image_url() : '';
     ?>
     <title><?php echo esc_html($seo_title); ?></title>
     <meta name="description" content="<?php echo esc_attr($seo_description); ?>">
@@ -209,6 +209,63 @@ function rf_theme_print_seo_meta($context = '', $title = '', $description = '', 
     <meta name="twitter:image" content="<?php echo esc_url($image); ?>">
     <?php
 }
+
+function rf_theme_get_og_image_url() {
+    $default_image = function_exists('get_template_directory_uri') ? get_template_directory_uri() . '/img/common/ogp-logo-center.png' : '';
+
+    if (function_exists('is_singular') && is_singular()) {
+        $post_id = get_queried_object_id();
+        $thumbnail_url = $post_id ? get_the_post_thumbnail_url($post_id, 'large') : '';
+        if ($thumbnail_url) {
+            return $thumbnail_url;
+        }
+    }
+
+    return $default_image;
+}
+
+function rf_theme_replace_og_image_meta($html) {
+    if (stripos($html, 'og:image') === false && stripos($html, 'twitter:image') === false) {
+        return $html;
+    }
+
+    $image = function_exists('rf_theme_get_og_image_url') ? esc_url(rf_theme_get_og_image_url()) : '';
+    if ($image === '') {
+        return $html;
+    }
+
+    $patterns = array(
+        '/(<meta\s+property=["\']og:image["\']\s+content=["\'])[^"\']*(["\'][^>]*>)/i',
+        '/(<meta\s+name=["\']twitter:image["\']\s+content=["\'])[^"\']*(["\'][^>]*>)/i',
+    );
+
+    foreach ($patterns as $pattern) {
+        $html = preg_replace($pattern, '$1' . $image . '$2', $html);
+    }
+
+    return $html;
+}
+
+function rf_theme_start_og_image_buffer() {
+    if (is_admin() || wp_doing_ajax() || (function_exists('wp_is_json_request') && wp_is_json_request()) || is_feed()) {
+        return;
+    }
+
+    ob_start('rf_theme_replace_og_image_meta');
+}
+add_action('template_redirect', 'rf_theme_start_og_image_buffer', 0);
+
+function rf_theme_print_favicon_links() {
+    $theme_uri = get_template_directory_uri();
+    $version = '2026070801';
+    ?>
+    <link rel="icon" href="<?php echo esc_url($theme_uri . '/img/common/favicon.ico?v=' . $version); ?>" sizes="any">
+    <link rel="icon" type="image/png" sizes="512x512" href="<?php echo esc_url($theme_uri . '/img/common/favicon.png?v=' . $version); ?>">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?php echo esc_url($theme_uri . '/img/common/favicon-192.png?v=' . $version); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo esc_url($theme_uri . '/img/common/apple-touch-icon.png?v=' . $version); ?>">
+    <?php
+}
+add_action('wp_head', 'rf_theme_print_favicon_links', 1);
 
 function rf_theme_get_structured_current_url() {
     $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '/';
@@ -585,6 +642,402 @@ function rf_theme_route_relabs_repair_alias() {
     exit;
 }
 add_action('template_redirect', 'rf_theme_route_relabs_repair_alias', 0);
+
+function rf_theme_route_legacy_rental_guide() {
+    $request_path = isset($_SERVER['REQUEST_URI'])
+        ? trim(parse_url(wp_unslash($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/')
+        : '';
+
+    if ($request_path !== 'rental.html') {
+        return;
+    }
+
+    status_header(200);
+    global $wp_query;
+    if ($wp_query) {
+        $wp_query->is_404 = false;
+    }
+
+    include get_template_directory() . '/guide_lend.php';
+    exit;
+}
+add_action('template_redirect', 'rf_theme_route_legacy_rental_guide', 0);
+
+function rf_theme_route_legacy_outlet_guide() {
+    $request_path = isset($_SERVER['REQUEST_URI'])
+        ? trim(parse_url(wp_unslash($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/')
+        : '';
+
+    if ($request_path !== 'outlet.html') {
+        return;
+    }
+
+    status_header(200);
+    global $wp_query;
+    if ($wp_query) {
+        $wp_query->is_404 = false;
+    }
+
+    include get_template_directory() . '/guide_sell.php';
+    exit;
+}
+add_action('template_redirect', 'rf_theme_route_legacy_outlet_guide', 0);
+
+function rf_theme_get_request_path() {
+    return isset($_SERVER['REQUEST_URI'])
+        ? trim(parse_url(wp_unslash($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/')
+        : '';
+}
+
+function rf_theme_load_template_page_context($template_file) {
+    $page_ids = get_posts(array(
+        'post_type' => 'page',
+        'post_status' => 'publish',
+        'posts_per_page' => 1,
+        'fields' => 'ids',
+        'meta_key' => '_wp_page_template',
+        'meta_value' => $template_file,
+        'orderby' => 'menu_order title',
+        'order' => 'ASC',
+        'no_found_rows' => true,
+    ));
+
+    if (empty($page_ids)) {
+        return;
+    }
+
+    $page = get_post((int) $page_ids[0]);
+    if (!$page instanceof WP_Post) {
+        return;
+    }
+
+    global $wp_query, $post;
+    $post = $page;
+    setup_postdata($post);
+
+    if ($wp_query instanceof WP_Query) {
+        $wp_query->queried_object = $page;
+        $wp_query->queried_object_id = (int) $page->ID;
+        $wp_query->post = $page;
+        $wp_query->posts = array($page);
+        $wp_query->post_count = 1;
+        $wp_query->current_post = -1;
+        $wp_query->is_page = true;
+        $wp_query->is_singular = true;
+        $wp_query->is_404 = false;
+    }
+}
+
+function rf_theme_include_legacy_template($template_file, $include_file) {
+    status_header(200);
+    global $wp_query;
+    if ($wp_query instanceof WP_Query) {
+        $wp_query->is_404 = false;
+    }
+
+    rf_theme_load_template_page_context($template_file);
+    include get_template_directory() . '/' . $include_file;
+    exit;
+}
+
+function rf_theme_route_legacy_list_archive() {
+    if (rf_theme_get_request_path() !== 'list.html') {
+        return;
+    }
+
+    foreach ($_GET as $key => $value) {
+        if (preg_match('/(^|;)p$/', (string) $key) && absint($value) > 0) {
+            set_query_var('paged', absint($value));
+            break;
+        }
+    }
+
+    status_header(200);
+    global $wp_query;
+    if ($wp_query instanceof WP_Query) {
+        $wp_query->is_404 = false;
+    }
+
+    include get_template_directory() . '/archive_children.php';
+    exit;
+}
+add_action('template_redirect', 'rf_theme_route_legacy_list_archive', 0);
+
+function rf_theme_route_legacy_search() {
+    if (rf_theme_get_request_path() !== 'search.html') {
+        return;
+    }
+
+    $legacy_query = isset($_GET['query']) ? sanitize_text_field(wp_unslash($_GET['query'])) : '';
+    if ($legacy_query !== '') {
+        $_GET['s'] = $legacy_query;
+        set_query_var('s', $legacy_query);
+    }
+
+    status_header(200);
+    global $wp_query;
+    if ($wp_query instanceof WP_Query) {
+        $wp_query->is_search = true;
+        $wp_query->is_404 = false;
+        $wp_query->query_vars['s'] = $legacy_query;
+    }
+
+    include get_template_directory() . '/search.php';
+    exit;
+}
+add_action('template_redirect', 'rf_theme_route_legacy_search', 0);
+
+function rf_theme_route_legacy_contact_pages() {
+    $request_path = rf_theme_get_request_path();
+    $contact_paths = array(
+        'contact/contact_outlet_2.html',
+        'contact/contact_outlet_1.html',
+        'contact/contact_rental.html',
+        'contact/contact_demo.html',
+        'contact/contact_ad.html',
+        'contact/contact_recruit_2.html',
+        'contact/contact_recruit_1.html',
+        'contact/contact_tenpo_2.html',
+        'contact/contact_tenpo_1.html',
+        'contact/contact_newopen.html',
+        'contact_1.html',
+    );
+
+    if (!in_array($request_path, $contact_paths, true)) {
+        return;
+    }
+
+    if ($request_path === 'contact_1.html' && empty($_GET['id']) && !empty($_GET['detail_id'])) {
+        $_GET['id'] = absint(wp_unslash($_GET['detail_id']));
+    }
+
+    rf_theme_include_legacy_template('contact.php', 'contact.php');
+}
+add_action('template_redirect', 'rf_theme_route_legacy_contact_pages', 0);
+
+function rf_theme_route_legacy_lookingfor() {
+    if (!in_array(rf_theme_get_request_path(), array('lookingfor.html', 'lookingforrental.html'), true)) {
+        return;
+    }
+
+    rf_theme_include_legacy_template('contact_resister.php', 'contact_resister.php');
+}
+add_action('template_redirect', 'rf_theme_route_legacy_lookingfor', 0);
+
+function rf_theme_route_legacy_salon_matching_pages() {
+    if (!in_array(rf_theme_get_request_path(), array('salon_kaitai.html', 'salon_uritai.html'), true)) {
+        return;
+    }
+
+    rf_theme_include_legacy_template('buying_recredit.php', 'buying_recredit.php');
+}
+add_action('template_redirect', 'rf_theme_route_legacy_salon_matching_pages', 0);
+
+function rf_theme_route_legacy_new_open() {
+    if (rf_theme_get_request_path() !== 'new_open.html') {
+        return;
+    }
+
+    rf_theme_include_legacy_template('guide_buy.php', 'guide_buy.php');
+}
+add_action('template_redirect', 'rf_theme_route_legacy_new_open', 0);
+
+function rf_theme_route_legacy_recruit() {
+    if (rf_theme_get_request_path() !== 'recruit.html') {
+        return;
+    }
+
+    rf_theme_include_legacy_template('contact.php', 'contact.php');
+}
+add_action('template_redirect', 'rf_theme_route_legacy_recruit', 0);
+
+function rf_theme_route_legacy_sitemap() {
+    if (rf_theme_get_request_path() !== 'sitemap.html') {
+        return;
+    }
+
+    status_header(200);
+    global $wp_query;
+    if ($wp_query instanceof WP_Query) {
+        $wp_query->is_404 = false;
+    }
+
+    $page_urls = rf_theme_get_named_page_urls();
+    $sitemap_links = array(
+        'トップページ' => home_url('/'),
+        '商品一覧' => rf_theme_get_products_url(),
+        'お問い合わせ' => $page_urls['contact'],
+        '会社概要' => $page_urls['company'],
+        '美容機器を借りたい' => $page_urls['guide_rent'],
+        '美容機器を貸したい' => $page_urls['guide_lend'],
+        '美容機器を買いたい' => $page_urls['guide_buy'],
+        '美容機器を売りたい' => $page_urls['guide_sell'],
+        '機器修理' => $page_urls['relabs'],
+        '店舗売買' => $page_urls['ma'],
+        'Re・Credit' => $page_urls['recredit'],
+        'シェアサロン' => home_url('/share-salon.html'),
+        'お知らせ' => $page_urls['news'],
+    );
+    ?>
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>サイトマップ | RESPECT FORCE</title>
+        <meta name="description" content="RESPECT FORCEのサイトマップです。">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link href="<?php bloginfo('template_directory'); ?>/css/common.css" rel="stylesheet">
+        <?php wp_head(); ?>
+    </head>
+    <body <?php body_class('rf-sitemap-page'); ?>>
+        <?php get_header(); ?>
+        <main class="rf-contact-page__main">
+            <header class="rf-contact-page__hero">
+                <div class="rf-contact-page__hero-inner">
+                    <h1 class="rf-contact-page__hero-title">サイトマップ</h1>
+                </div>
+            </header>
+            <section class="rf-contact-form">
+                <div class="rf-contact-form__inner">
+                    <ul>
+                        <?php foreach ($sitemap_links as $label => $url) : ?>
+                            <li><a href="<?php echo esc_url($url); ?>"><?php echo esc_html($label); ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </section>
+        </main>
+        <?php get_footer(); ?>
+        <?php wp_footer(); ?>
+    </body>
+    </html>
+    <?php
+    exit;
+}
+add_action('template_redirect', 'rf_theme_route_legacy_sitemap', 0);
+
+function rf_theme_get_legacy_topic_archive_map() {
+    return array(
+        'topic1.html' => array('slug' => 'beautysalon', 'label' => 'エステ'),
+        'topic2.html' => array('slug' => 'healing', 'label' => '癒し・リラク'),
+        'topic3.html' => array('slug' => 'fitness', 'label' => 'フィットネス'),
+        'topic4.html' => array('slug' => 'cosmetics', 'label' => 'コスメ'),
+        'topic5.html' => array('slug' => 'osteopathic', 'label' => '接骨・整骨院'),
+        'topic6.html' => array('slug' => 'beautyclinic', 'label' => '美容クリニック'),
+        'topic7.html' => array('slug' => 'nail', 'label' => 'ネイル・ヘアサロン'),
+        'topic8.html' => array('slug' => 'spa', 'label' => 'スパ・ホテル'),
+        'topic9.html' => array('slug' => 'school', 'label' => 'スクール・専門学校'),
+    );
+}
+
+function rf_theme_route_legacy_topic_archives() {
+    $request_path = isset($_SERVER['REQUEST_URI'])
+        ? trim(parse_url(wp_unslash($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/')
+        : '';
+    $legacy_topic_map = rf_theme_get_legacy_topic_archive_map();
+
+    if (!isset($legacy_topic_map[$request_path])) {
+        return;
+    }
+
+    status_header(200);
+    global $wp_query, $rf_legacy_topic_context;
+    if ($wp_query) {
+        $wp_query->is_404 = false;
+    }
+
+    $rf_legacy_topic_context = array_merge(
+        $legacy_topic_map[$request_path],
+        array('path' => $request_path)
+    );
+
+    include get_template_directory() . '/news_archive.php';
+    exit;
+}
+add_action('template_redirect', 'rf_theme_route_legacy_topic_archives', 0);
+
+function rf_theme_route_legacy_news_detail() {
+    $request_path = rf_theme_get_request_path();
+    if (!preg_match('/^news([0-9]+)\.html$/', $request_path, $matches)) {
+        return;
+    }
+
+    $legacy_topic_id = absint($matches[1]);
+    if ($legacy_topic_id <= 0) {
+        return;
+    }
+
+    $legacy_posts = get_posts(array(
+        'post_type' => 'post',
+        'post_status' => 'publish',
+        'posts_per_page' => 1,
+        'meta_query' => array(
+            'relation' => 'OR',
+            array(
+                'key' => 'custom_permalink',
+                'value' => $request_path,
+            ),
+            array(
+                'key' => 'topic_id',
+                'value' => (string) $legacy_topic_id,
+            ),
+        ),
+        'orderby' => 'date',
+        'order' => 'DESC',
+        'no_found_rows' => true,
+    ));
+
+    $legacy_post = !empty($legacy_posts[0]) ? $legacy_posts[0] : get_post($legacy_topic_id);
+    if (!($legacy_post instanceof WP_Post) || $legacy_post->post_type !== 'post' || $legacy_post->post_status !== 'publish') {
+        return;
+    }
+
+    status_header(200);
+    global $wp_query, $post;
+    $post = $legacy_post;
+    setup_postdata($post);
+
+    if ($wp_query instanceof WP_Query) {
+        $wp_query->queried_object = $legacy_post;
+        $wp_query->queried_object_id = (int) $legacy_post->ID;
+        $wp_query->post = $legacy_post;
+        $wp_query->posts = array($legacy_post);
+        $wp_query->post_count = 1;
+        $wp_query->current_post = -1;
+        $wp_query->is_single = true;
+        $wp_query->is_singular = true;
+        $wp_query->is_404 = false;
+    }
+
+    include get_template_directory() . '/single.php';
+    exit;
+}
+add_action('template_redirect', 'rf_theme_route_legacy_news_detail', 0);
+
+function rf_theme_route_legacy_outlet_detail() {
+    $request_path = isset($_SERVER['REQUEST_URI'])
+        ? trim(parse_url(wp_unslash($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/')
+        : '';
+
+    if ($request_path !== 'detail_outlet.html') {
+        return;
+    }
+
+    $detail_id = isset($_GET['detail_id']) ? absint(wp_unslash($_GET['detail_id'])) : 0;
+    if ($detail_id <= 0) {
+        return;
+    }
+
+    status_header(200);
+    global $wp_query;
+    if ($wp_query) {
+        $wp_query->is_404 = false;
+    }
+
+    include get_template_directory() . '/single_products.php';
+    exit;
+}
+add_action('template_redirect', 'rf_theme_route_legacy_outlet_detail', 0);
 
 // カスタム列を追加（変更なし）
 function add_acf_columns($columns) {
@@ -1764,9 +2217,13 @@ function rf_theme_get_products_url() {
 function rf_theme_map_products_index_request($query_vars) {
     $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '';
     $request_path = trim((string) parse_url($request_uri, PHP_URL_PATH), '/');
+    $legacy_paged = 0;
 
-    if ($request_path !== 'seihin_index.html') {
+    if ($request_path !== 'seihin_index.html' && !preg_match('#^seihin_index\.html/page/([0-9]+)/?$#', $request_path, $page_matches)) {
         return $query_vars;
+    }
+    if (!empty($page_matches[1])) {
+        $legacy_paged = max(1, (int) $page_matches[1]);
     }
 
     $products_category = rf_theme_get_products_category_term();
@@ -1776,6 +2233,9 @@ function rf_theme_map_products_index_request($query_vars) {
 
     unset($query_vars['pagename'], $query_vars['name'], $query_vars['page']);
     $query_vars['category_name'] = $products_category->slug;
+    if ($legacy_paged > 1) {
+        $query_vars['paged'] = $legacy_paged;
+    }
 
     return $query_vars;
 }
@@ -1784,7 +2244,7 @@ add_filter('request', 'rf_theme_map_products_index_request');
 function rf_theme_disable_products_index_canonical_redirect($redirect_url, $requested_url) {
     $request_path = trim((string) parse_url($requested_url, PHP_URL_PATH), '/');
 
-    if ($request_path === 'seihin_index.html') {
+    if ($request_path === 'seihin_index.html' || preg_match('#^seihin_index\.html/page/[0-9]+/?$#', $request_path)) {
         return false;
     }
 
@@ -1860,8 +2320,8 @@ function rf_theme_get_named_page_urls() {
         'terms' => rf_theme_get_template_page_url('terms.php', '/terms/'),
         'guide_rent' => rf_theme_get_template_page_url('guide.php', '/guide/'),
         'guide_buy' => rf_theme_get_template_page_url('guide_buy.php', '/guide-buy/'),
-        'guide_lend' => rf_theme_get_template_page_url('guide_lend.php', '/guide-lend/'),
-        'guide_sell' => rf_theme_get_template_page_url('guide_sell.php', '/guide-sell/'),
+        'guide_lend' => home_url('/rental.html'),
+        'guide_sell' => home_url('/outlet.html'),
         'relabs' => home_url('/trouble.html'),
         'recredit' => rf_theme_get_template_page_url('recredit.php', '/recredit.html'),
         'remake' => rf_theme_get_template_page_url('remake.php', '/remake.html'),
@@ -2369,8 +2829,8 @@ function rf_theme_get_top_service_banners() {
         array('image_dir' => 'figma-service', 'image' => 'banner-1.png', 'title' => '美容機器売買サービス', 'url' => rf_theme_get_products_url()),
         array('image_dir' => 'figma-service', 'image' => 'banner-2.png', 'title' => '修理・メンテナンス', 'url' => $page_urls['relabs']),
         array('image_dir' => 'figma-service', 'image' => 'banner-3.png', 'title' => '集金業務サポート', 'url' => $page_urls['recredit']),
-        array('image_dir' => 'figma-service', 'image' => 'banner-4.png', 'title' => 'シェアサロン・スペース', 'url' => $page_urls['remake']),
-        array('image_dir' => 'figma-service', 'image' => 'banner-5.png', 'title' => 'LINE予約', 'url' => $page_urls['restart']),
+        array('image_dir' => 'figma-service', 'image' => 'banner-4.png', 'title' => 'シェアサロン・スペース', 'url' => home_url('/share-salon.html')),
+        array('image_dir' => 'figma-service', 'image' => 'banner-5.png', 'title' => 'LINE予約', 'url' => 'https://restart-line.com/'),
         array('image_dir' => 'figma-service', 'image' => 'banner-6.png', 'title' => '店舗マッチング', 'url' => $page_urls['ma']),
     );
 }

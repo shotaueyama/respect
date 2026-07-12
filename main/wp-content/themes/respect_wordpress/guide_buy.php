@@ -8,7 +8,8 @@ $buy_guide_asset_version = '2026070101';
 $shortcut_cards = rf_theme_get_top_shortcut_cards();
 $products_url = function_exists('rf_theme_get_products_url') ? rf_theme_get_products_url() : home_url('/');
 $buy_url = !empty($shortcut_cards[2]['url']) ? $shortcut_cards[2]['url'] : $products_url;
-$guide_floating_cta_url = $buy_url;
+$buy_item_search_url = home_url('/seihin_index.html?node_list=&sort=date_desc&price_min=0&price_max=6070000&lease_equipment=1&rental_equipment=1');
+$guide_floating_cta_url = $buy_item_search_url;
 $guide_floating_cta_label = 'アイテムを探す';
 if (have_posts()) {
     the_post();
@@ -102,7 +103,7 @@ $merit_cards = array(
     <title><?php echo esc_html($rf_seo["title"]); ?></title>
     <meta name="description" content="<?php echo esc_attr($rf_seo["description"]); ?>">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <link href="<?php bloginfo('template_directory'); ?>/css/common.css?v=2026070101" rel="stylesheet">
+    <link href="<?php bloginfo('template_directory'); ?>/css/common.css?v=2026070804" rel="stylesheet">
     <meta property="og:type" content="article">
     <meta property="og:title" content="<?php echo esc_attr($rf_seo["title"]); ?>">
     <meta property="og:url" content="">
@@ -237,7 +238,7 @@ $merit_cards = array(
                 </div>
 
                 <div class="rf-guide-page__footer-cta">
-                    <a href="<?php echo esc_url($buy_url); ?>" class="rf-guide-page__cta">アイテムを探す</a>
+                    <a href="<?php echo esc_url($buy_item_search_url); ?>" class="rf-guide-page__cta">アイテムを探す</a>
                 </div>
             </div>
         </section>

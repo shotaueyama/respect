@@ -2,6 +2,7 @@
 /*
 Template Name:機器修理（リクレジットコピー）
 */
+$relabs_contact_url = home_url('/contact.html?sv=005');
 ?>
 
 <!DOCTYPE html>
@@ -63,11 +64,11 @@ Template Name:機器修理（リクレジットコピー）
                         古い機種の修理・点検から、代替機貸出・保証対応まで、<br>サロン様が安心して営業を続けられる修理体制を整えています。
                     </p>
                     <div class="recredit-hero__actions">
-                        <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="c-button --style-3 recredit-hero__button">
+                        <a href="<?php echo esc_url($relabs_contact_url); ?>" class="c-button --style-3 recredit-hero__button">
                             <span>無料見積もり</span>
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </a>
-                        <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="recredit-hero__outline-button">問い合わせ</a>
+                        <a href="<?php echo esc_url($relabs_contact_url); ?>" class="recredit-hero__outline-button">問い合わせ</a>
                     </div>
                 </div>
 
@@ -143,8 +144,8 @@ Template Name:機器修理（リクレジットコピー）
                 <img src="<?php echo esc_url(get_template_directory_uri() . '/img/common/banner_4.png?v=2026062301'); ?>" alt="弊社の強み。即日または短期間対応可能、古いメーカー・廃盤機種も対応、代替機レンタル提供、再発防止・カスタマイズ提案" loading="lazy" decoding="async">
             </figure>
             <div class="recredit-solution__actions relabs-strength__actions">
-                <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="c-button --style-3 recredit-solution__button">無料見積もり</a>
-                <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="recredit-solution__outline-button">問い合わせ</a>
+                <a href="<?php echo esc_url($relabs_contact_url); ?>" class="c-button --style-3 recredit-solution__button">無料見積もり</a>
+                <a href="<?php echo esc_url($relabs_contact_url); ?>" class="recredit-solution__outline-button">問い合わせ</a>
             </div>
         </div>
     </section>
@@ -192,8 +193,8 @@ Template Name:機器修理（リクレジットコピー）
             </div>
 
             <div class="recredit-solution__actions">
-                <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="c-button --style-3 recredit-solution__button">無料見積もり</a>
-                <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="recredit-solution__outline-button">問い合わせ</a>
+                <a href="<?php echo esc_url($relabs_contact_url); ?>" class="c-button --style-3 recredit-solution__button">無料見積もり</a>
+                <a href="<?php echo esc_url($relabs_contact_url); ?>" class="recredit-solution__outline-button">問い合わせ</a>
             </div>
         </div>
     </section>
@@ -264,8 +265,8 @@ Template Name:機器修理（リクレジットコピー）
             </div>
             <p class="relabs-machine-note">その他、様々な機種に対応しております！まずはお気軽にご相談ください。</p>
             <div class="buying-final-cta__actions relabs-machine-actions">
-                <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="c-button --style-3 recredit-cases__button">無料見積もり</a>
-                <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="recredit-cases__outline-button">問い合わせ</a>
+                <a href="<?php echo esc_url($relabs_contact_url); ?>" class="c-button --style-3 recredit-cases__button">無料見積もり</a>
+                <a href="<?php echo esc_url($relabs_contact_url); ?>" class="recredit-cases__outline-button">問い合わせ</a>
             </div>
         </div>
     </section>
@@ -411,8 +412,8 @@ Template Name:機器修理（リクレジットコピー）
             <h2>LINEで写真を送る</h2>
             <p>フォーム、電話・LINEなど複数チャネル対応。24時間以内にご連絡します。</p>
             <div class="buying-final-cta__actions">
-                <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="c-button --style-3 recredit-cases__button">無料見積もり</a>
-                <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="recredit-cases__outline-button">問い合わせ</a>
+                <a href="<?php echo esc_url($relabs_contact_url); ?>" class="c-button --style-3 recredit-cases__button">無料見積もり</a>
+                <a href="<?php echo esc_url($relabs_contact_url); ?>" class="recredit-cases__outline-button">問い合わせ</a>
                 <a href="https://lin.ee/ioXC3La" class="recredit-cases__outline-button relabs-line-button" target="_blank" rel="noopener noreferrer">LINEで送る</a>
             </div>
         </div>

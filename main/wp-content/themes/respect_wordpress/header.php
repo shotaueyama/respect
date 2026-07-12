@@ -14,6 +14,8 @@ $line_menu_items = array(
     array('label' => '美容機器の修理', 'url' => 'https://lin.ee/ioXC3La', 'external' => true),
     array('label' => '集金代行の申込/依頼', 'url' => 'https://lin.ee/EgEvWDd', 'external' => true),
     array('label' => '店舗売買の相談', 'url' => 'https://lin.ee/m6kx8Cc', 'external' => true),
+    array('label' => '美容スペースシェア', 'url' => 'https://line.me/R/ti/p/@009vhwkq?oat_content=url&ts=06011307', 'external' => true),
+    array('label' => '予約管理システム', 'url' => 'https://page.line.me/559oteso?oat_content=url&openQrModal=true', 'external' => true),
 );
 ?>
 <header class="top-header">

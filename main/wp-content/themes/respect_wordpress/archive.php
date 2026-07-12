@@ -2,7 +2,7 @@
 global $wp;
 
 $search_query = get_search_query();
-$paged = get_query_var('paged') ? (int) get_query_var('paged') : 1;
+$paged = get_query_var('paged') ? (int) get_query_var('paged') : (isset($_GET['paged']) ? max(1, (int) $_GET['paged']) : 1);
 $filters = rf_theme_get_listing_filters_from_request();
 $selected_node_ids = rf_theme_get_selected_node_ids_from_request();
 $sort = rf_theme_get_listing_sort_from_request();
@@ -330,9 +330,15 @@ $site_url = esc_url(home_url('/'));
                         </div>
 
                         <?php
+                        $pagination_query_args = $_GET;
+                        unset($pagination_query_args['paged']);
+                        $pagination_path = isset($_SERVER['REQUEST_URI']) ? parse_url(wp_unslash($_SERVER['REQUEST_URI']), PHP_URL_PATH) : '/seihin_index.html';
+                        $pagination_path = $pagination_path ? $pagination_path : '/seihin_index.html';
+                        $pagination_base_url = home_url($pagination_path);
+                        $pagination_base = add_query_arg(array_merge($pagination_query_args, array('paged' => 999999999)), $pagination_base_url);
                         $paginate_links = paginate_links(array(
-                            'base' => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
-                            'format' => '?paged=%#%',
+                            'base' => str_replace(999999999, '%#%', esc_url($pagination_base)),
+                            'format' => '',
                             'current' => max(1, $paged),
                             'total' => $max_num_pages,
                             'type' => 'array',

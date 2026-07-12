@@ -8,6 +8,7 @@ $shortcut_cards = rf_theme_get_top_shortcut_cards();
 $page_urls = rf_theme_get_named_page_urls();
 $contact_url = $page_urls['contact'] ?? home_url('/contact.html');
 $products_url = function_exists('rf_theme_get_products_url') ? rf_theme_get_products_url() : home_url('/');
+$guide_page_title = 'ご利用ガイド（美容機器を売りたい）';
 $guide_floating_cta_url = $contact_url;
 $guide_floating_cta_label = 'お問い合わせ';
 if (have_posts()) {
@@ -103,7 +104,7 @@ $merit_cards = array(
     <title><?php echo esc_html($rf_seo["title"]); ?></title>
     <meta name="description" content="<?php echo esc_attr($rf_seo["description"]); ?>">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <link href="<?php bloginfo('template_directory'); ?>/css/common.css" rel="stylesheet">
+    <link href="<?php bloginfo('template_directory'); ?>/css/common.css?v=2026070804" rel="stylesheet">
     <meta property="og:type" content="article">
     <meta property="og:title" content="<?php echo esc_attr($rf_seo["title"]); ?>">
     <meta property="og:url" content="">
@@ -131,13 +132,13 @@ $merit_cards = array(
                 <span class="rf-detail__breadcrumbs-separator">›</span>
                 <a href="<?php echo esc_url($products_url); ?>">美容・健康関連商品</a>
                 <span class="rf-detail__breadcrumbs-separator">›</span>
-                <span><?php the_title(); ?></span>
+                <span><?php echo esc_html($guide_page_title); ?></span>
             </nav>
         </div>
 
         <header class="rf-guide-page__hero">
             <div class="rf-guide-page__inner">
-                <h1 class="rf-guide-page__title"><?php the_title(); ?></h1>
+                <h1 class="rf-guide-page__title"><?php echo esc_html($guide_page_title); ?></h1>
             </div>
         </header>
 

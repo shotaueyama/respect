@@ -110,6 +110,18 @@ $picture_api_url_3 = "";
 $picture_api_url_4 = "";
 $featured_image_url = "";
 $product_kana = "";
+$detail_catch = isset($data_array["detail_catch"]) ? $data_array["detail_catch"] : '';
+$detail_comment = isset($data_array["detail_comment"]) ? $data_array["detail_comment"] : '';
+$detail_standard = isset($data_array["detail_standard"]) ? $data_array["detail_standard"] : '';
+$detail_title = isset($data_array["detail_title"]) ? $data_array["detail_title"] : '';
+$detail_prise = isset($data_array["detail_prise"]) ? $data_array["detail_prise"] : '';
+$detail_prise_type = isset($data_array["detail_prise_type"]) ? $data_array["detail_prise_type"] : '';
+$new_price = '';
+$used_price = '';
+$rental_price = '';
+$lease_price = '';
+$sale_price = '';
+$type = isset($_GET['type']) ? sanitize_text_field($_GET['type']) : '';
 
 // 商品データから画像IDを取得
 $picture_id = isset($data_array['picture_id']) ? $data_array['picture_id'] : '';
@@ -188,9 +200,6 @@ if ($query->have_posts()) {
     $lease_price = get_field("lease_price");
     $sale_price = get_field("sale_price");
 
-
-    // URLパラメータ'type'を取得し、サニタイズする
-    $type = isset($_GET['type']) ? sanitize_text_field($_GET['type']) : '';
 
     // 表示する変数を格納するための変数を初期化
     $display_price = null;
@@ -276,9 +285,6 @@ if ($query->have_posts()) {
 
     // Reset post data
     wp_reset_postdata();
-} else {
-    // No matching post found
-    echo '<p>No matching product found.</p>';
 }
 
 

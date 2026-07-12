@@ -404,7 +404,7 @@ $pickup_product_panels = array(
 $ranking_sections = rf_get_top_ranking_sections($product_category_terms);
 
 $guide_items = array(
-    array('icon' => 'icon-rent-want.png', 'title_lines' => array('美容機器を', '借りたい方'), 'url' => 'https://test.respect-force.co.jp/%e3%81%94%e5%88%a9%e7%94%a8%e3%82%ac%e3%82%a4%e3%83%89/'),
+    array('icon' => 'icon-rent-want.png', 'title_lines' => array('美容機器を', '借りたい方'), 'url' => home_url('/borrow.html')),
     array('icon' => 'icon-lend-want.png', 'title_lines' => array('美容機器を', '貸したい方'), 'url' => $guide_urls['guide_lend']),
     array('icon' => 'icon-buy-want.png', 'title_lines' => array('美容機器を', '買いたい方'), 'url' => $guide_urls['guide_buy']),
     array('icon' => 'icon-sell-want.png', 'title_lines' => array('美容機器を', '売りたい方'), 'url' => $guide_urls['guide_sell']),
@@ -420,7 +420,7 @@ $contact_rows = rf_get_top_news_rows(3);
     <title><?php echo esc_html($rf_seo["title"]); ?></title>
     <meta name="description" content="<?php echo esc_attr($rf_seo["description"]); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="<?php echo $theme_uri; ?>/css/common.css?v=2026063018" rel="stylesheet">
+    <link href="<?php echo $theme_uri; ?>/css/common.css?v=2026071002" rel="stylesheet">
     <meta property="og:type" content="article">
     <meta property="og:title" content="<?php echo esc_attr($rf_seo["title"]); ?>">
     <meta property="og:url" content="<?php echo $site_url; ?>">
@@ -612,7 +612,7 @@ $contact_rows = rf_get_top_news_rows(3);
                 </div>
 
                 <div class="top-contact__cta-row">
-                    <a href="<?php echo esc_url('https://test.respect-force.co.jp/topic11.html'); ?>" class="top-contact__button">
+                    <a href="<?php echo esc_url(home_url('/topic11.html')); ?>" class="top-contact__button">
                         <i aria-hidden="true"></i>
                         <span>すべて見る</span>
                     </a>
@@ -627,6 +627,69 @@ $contact_rows = rf_get_top_news_rows(3);
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
+        var productTitleResizeTimer = null;
+
+        function getVisibleTopProductTitles(grid) {
+            return Array.prototype.filter.call(grid.querySelectorAll('.top-product-card__title'), function (title) {
+                var card = title.closest('.top-product-card');
+                return card && title.offsetParent !== null && card.offsetParent !== null;
+            });
+        }
+
+        function alignTopProductTitleRows() {
+            document.querySelectorAll('.js-top-product-section .top-product-grid').forEach(function (grid) {
+                var titles = getVisibleTopProductTitles(grid);
+                var rows = [];
+
+                titles.forEach(function (title) {
+                    title.style.minHeight = '';
+                });
+
+                titles.forEach(function (title) {
+                    var card = title.closest('.top-product-card');
+                    var top = Math.round(card.getBoundingClientRect().top);
+                    var row = rows.find(function (candidate) {
+                        return Math.abs(candidate.top - top) <= 2;
+                    });
+
+                    if (!row) {
+                        row = { top: top, titles: [] };
+                        rows.push(row);
+                    }
+
+                    row.titles.push(title);
+                });
+
+                rows.forEach(function (row) {
+                    var maxHeight = row.titles.reduce(function (height, title) {
+                        return Math.max(height, Math.ceil(title.getBoundingClientRect().height));
+                    }, 0);
+
+                    row.titles.forEach(function (title) {
+                        title.style.minHeight = maxHeight > 0 ? maxHeight + 'px' : '';
+                    });
+                });
+            });
+        }
+
+        function scheduleTopProductTitleAlign() {
+            window.requestAnimationFrame(function () {
+                window.requestAnimationFrame(alignTopProductTitleRows);
+            });
+        }
+
+        scheduleTopProductTitleAlign();
+        window.addEventListener('load', scheduleTopProductTitleAlign);
+
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(scheduleTopProductTitleAlign);
+        }
+
+        window.addEventListener('resize', function () {
+            window.clearTimeout(productTitleResizeTimer);
+            productTitleResizeTimer = window.setTimeout(scheduleTopProductTitleAlign, 120);
+        });
+
         document.querySelectorAll('.js-top-product-section').forEach(function (section) {
             var tabs = section.querySelectorAll('.top-section__tab');
             var panels = section.querySelectorAll('[data-panel]');
@@ -648,6 +711,8 @@ $contact_rows = rf_get_top_news_rows(3);
                     panels.forEach(function (panel) {
                         panel.hidden = panel.getAttribute('data-panel') !== target;
                     });
+
+                    scheduleTopProductTitleAlign();
                 });
             });
         });

@@ -187,6 +187,21 @@ $contact_inquiry_options = array(
     'サロン集金代行',
 );
 
+$contact_service_code = isset($_GET['sv']) ? sanitize_key(wp_unslash($_GET['sv'])) : '';
+$contact_service_inquiry_map = array(
+    '001' => 'サロン集金代行',
+    '004' => '店舗売買',
+    '005' => '美容機器の修理相談',
+);
+$contact_selected_inquiry = $contact_inquiry_options[0];
+
+if (
+    isset($contact_service_inquiry_map[$contact_service_code]) &&
+    in_array($contact_service_inquiry_map[$contact_service_code], $contact_inquiry_options, true)
+) {
+    $contact_selected_inquiry = $contact_service_inquiry_map[$contact_service_code];
+}
+
 
 
 ?>
@@ -269,7 +284,7 @@ $contact_inquiry_options = array(
                                     <div class="rf-contact-form__checks">
                                         <?php foreach ($contact_inquiry_options as $index => $option_label) : ?>
                                             <label class="rf-contact-form__check">
-                                                <input type="checkbox" name="rf_inquiry_type[]" value="<?php echo esc_attr($option_label); ?>" <?php checked($index === 0); ?>>
+                                                <input type="checkbox" name="rf_inquiry_type[]" value="<?php echo esc_attr($option_label); ?>" <?php checked($option_label === $contact_selected_inquiry); ?>>
                                                 <span class="rf-contact-form__check-box" aria-hidden="true"></span>
                                                 <span class="rf-contact-form__check-text"><?php echo esc_html($option_label); ?></span>
                                             </label>

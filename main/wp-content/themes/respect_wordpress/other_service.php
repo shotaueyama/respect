@@ -11,7 +11,13 @@ $service_banners = rf_theme_get_top_service_banners();
 
         <div class="top-service__grid">
             <?php foreach ($service_banners as $service) : ?>
-                <a href="<?php echo esc_url($service['url']); ?>" class="top-service__item">
+                <?php
+                $service_url = isset($service['url']) ? $service['url'] : '#';
+                $service_host = wp_parse_url($service_url, PHP_URL_HOST);
+                $home_host = wp_parse_url(home_url('/'), PHP_URL_HOST);
+                $is_external = $service_host && $home_host && $service_host !== $home_host;
+                ?>
+                <a href="<?php echo esc_url($service_url); ?>" class="top-service__item"<?php echo $is_external ? ' target="_blank" rel="noopener"' : ''; ?>>
                     <img src="<?php echo $theme_uri; ?>/img/<?php echo esc_attr(!empty($service['image_dir']) ? $service['image_dir'] : 'common'); ?>/<?php echo esc_attr($service['image']); ?>" alt="<?php echo esc_attr($service['title']); ?>">
                 </a>
             <?php endforeach; ?>

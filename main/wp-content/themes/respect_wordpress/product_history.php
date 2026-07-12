@@ -2,8 +2,8 @@
 $has_history = isset($_COOKIE['product_history']);
 $history_array = $has_history ? json_decode(stripslashes($_COOKIE['product_history']), true) : [];
 
-if (!empty($history_array)) {
-    $ids = array_column($history_array, 'id');
+if (is_array($history_array) && !empty($history_array)) {
+    $ids = array_values(array_filter(array_map('absint', array_column($history_array, 'id'))));
     $ids = array_reverse($ids);
 } else {
     $ids = array();
@@ -24,75 +24,49 @@ if (!empty($history_array)) {
             // 重複を削除し、最新の5つのIDを取得
             $unique_ids = array_slice(array_unique($ids), 0, 5);
 
-            $args = array(
-                'post_type' => 'post',
-                'posts_per_page' => -1,
-                'meta_query' => array(
-                    'relation' => 'OR',
-                    array(
-                        'key' => 'connect_id',
-                        'value' => $unique_ids,
-                        'compare' => 'IN'
-                    ),
-                    array(
-                        'key' => 'detail_id',
-                        'value' => $unique_ids,
-                        'compare' => 'IN'
-                    )
-                )
-            );
-            
-            $query = new WP_Query($args);
-            
-            if ($query->have_posts()) :
-                $history_posts = $query->posts;
-                $listing_detail_rows = rf_theme_get_listing_preload_map($history_posts);
-                $history_order = array_flip($unique_ids);
+            $history_items = array();
+            foreach ($unique_ids as $history_id) {
+                $product_data = function_exists('rf_theme_fetch_product_detail_row') ? rf_theme_fetch_product_detail_row($history_id) : null;
+                if (!is_array($product_data) || empty($product_data['detail_id'])) {
+                    continue;
+                }
 
-                usort($history_posts, function ($left, $right) use ($history_order) {
-                    $left_connect_id = (int) get_field('connect_id', $left->ID);
-                    $left_detail_id = (int) get_field('detail_id', $left->ID);
-                    $right_connect_id = (int) get_field('connect_id', $right->ID);
-                    $right_detail_id = (int) get_field('detail_id', $right->ID);
-
-                    $left_position = $history_order[$left_connect_id] ?? $history_order[$left_detail_id] ?? PHP_INT_MAX;
-                    $right_position = $history_order[$right_connect_id] ?? $history_order[$right_detail_id] ?? PHP_INT_MAX;
-
-                    if ($left_position === $right_position) {
-                        return 0;
+                $detail_id = (int) $product_data['detail_id'];
+                $history_image_src = '';
+                foreach (array('picture_id', 'picture_id1', 'picture_id2') as $picture_key) {
+                    if (!empty($product_data[$picture_key])) {
+                        $history_image_src = rf_theme_get_picture_image_url($product_data[$picture_key]);
+                        if ($history_image_src !== '') {
+                            break;
+                        }
                     }
+                }
+                if ($history_image_src === '') {
+                    $history_image_src = get_template_directory_uri() . '/img/common/no-image.png';
+                }
 
-                    return ($left_position < $right_position) ? -1 : 1;
-                });
+                $history_items[] = array(
+                    'title' => !empty($product_data['detail_title']) ? (string) $product_data['detail_title'] : '商品コード：' . $detail_id,
+                    'link' => rf_theme_get_product_detail_url($detail_id),
+                    'image_src' => $history_image_src,
+                    'price_display' => rf_theme_get_listing_price_display(0, $product_data),
+                );
+            }
 
-                foreach ($history_posts as $post) :
-                    setup_postdata($post);
-                    $connect_id = (int) get_field('connect_id', get_the_ID());
-                    $listing_data = rf_theme_get_product_listing_data(
-                        get_the_ID(),
-                        $connect_id && isset($listing_detail_rows[$connect_id]) ? $listing_detail_rows[$connect_id] : null
-                    );
-                    $price_display = rf_theme_get_listing_price_display(get_the_ID(), $listing_data['product_data']);
-                    $link = $listing_data['detail_url'];
-                    $history_image_src = !empty($listing_data['image_src'])
-                        ? $listing_data['image_src']
-                        : get_template_directory_uri() . '/img/common/no-image.png';
+            if (!empty($history_items)) :
+                foreach ($history_items as $history_item) :
             ?>
-                <a href="<?php echo esc_url($link); ?>" class="top-product-card">
+                <a href="<?php echo esc_url($history_item['link']); ?>" class="top-product-card">
                     <div class="top-product-card__frame">
                         <div class="top-product-card__image">
-                        <?php if (has_post_thumbnail()): ?>
-                            <?php the_post_thumbnail('thumbnail', array('alt' => get_the_title())); ?>
-                        <?php else: ?>
-                            <img src="<?php echo esc_url($history_image_src); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" onerror="this.onerror=null;this.src='<?php echo esc_js(get_template_directory_uri() . '/img/common/no-image.png'); ?>';">
-                        <?php endif; ?>
+                            <img src="<?php echo esc_url($history_item['image_src']); ?>" alt="<?php echo esc_attr($history_item['title']); ?>" onerror="this.onerror=null;this.src='<?php echo esc_js(get_template_directory_uri() . '/img/common/no-image.png'); ?>';">
                         </div>
                     </div>
-                    <h3 class="top-product-card__title"><?php the_title(); ?></h3>
-                    <?php if ($price_display) : ?>
-                        <p class="top-product-card__label"><?php echo esc_html($price_display['label']); ?></p>
+                    <h3 class="top-product-card__title"><?php echo esc_html($history_item['title']); ?></h3>
+                    <?php if ($history_item['price_display']) : ?>
+                        <p class="top-product-card__label"><?php echo esc_html($history_item['price_display']['label']); ?></p>
                         <p class="top-product-card__price">
-                            <span class="top-product-card__price-number"><?php echo esc_html(number_format($price_display['amount'])); ?></span>
+                            <span class="top-product-card__price-number"><?php echo esc_html(number_format($history_item['price_display']['amount'])); ?></span>
                             <span class="top-product-card__price-unit">円</span>
                         </p>
                     <?php endif; ?>
@@ -104,7 +78,6 @@ if (!empty($history_array)) {
                 <p class="product-history__empty">まだ閲覧履歴がありません</p>
             <?php
             endif;
-            wp_reset_postdata();
             ?>
         </div>
     </div>

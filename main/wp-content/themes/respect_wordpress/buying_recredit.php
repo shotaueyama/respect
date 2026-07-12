@@ -60,11 +60,11 @@ Template Name:店舗売買（リクレジットコピー）
                         独立開業から事業承継まで、安心・スピーディーにサポートします。
                     </p>
                     <div class="recredit-hero__actions">
-                        <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="c-button --style-3 recredit-hero__button">
+                        <a href="<?php echo home_url(); ?>/contact.html?sv=004" class="c-button --style-3 recredit-hero__button">
                             <span>無料相談する</span>
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </a>
-                        <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="recredit-hero__outline-button">店舗掲載について相談する</a>
+                        <a href="<?php echo home_url(); ?>/contact.html?sv=004" class="recredit-hero__outline-button">店舗掲載について相談する</a>
                     </div>
                 </div>
 
@@ -264,8 +264,8 @@ Template Name:店舗売買（リクレジットコピー）
             <h2>ぜひお気軽にご相談ください！</h2>
             <p>無料で店舗掲載・相談受付中。24時間以内に担当よりご連絡します。</p>
             <div class="buying-final-cta__actions">
-                <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="c-button --style-3 recredit-cases__button">無料相談する</a>
-                <a href="<?php echo home_url(); ?>/contact.html?sv=001" class="recredit-cases__outline-button">店舗掲載について相談する</a>
+                <a href="<?php echo home_url(); ?>/contact.html?sv=004" class="c-button --style-3 recredit-cases__button">無料相談する</a>
+                <a href="<?php echo home_url(); ?>/contact.html?sv=004" class="recredit-cases__outline-button">店舗掲載について相談する</a>
             </div>
         </div>
     </section>
